@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Generator</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>AI Resume Generator</h1>
+
+    <input id="name" placeholder="Enter your name"><br><br>
+
+    <input id="skills" placeholder="Enter your skills"><br><br>
+
+    <textarea id="experience" placeholder="Enter your experience"></textarea><br><br>
+
+    <textarea id="education" placeholder="Enter your education"></textarea><br><br>
+
+    <button type="button" onclick="generateResume()">Generate Resume</button>
+
+    <script>
+        async function generateResume() {
+            const data = {
+                name: document.getElementById("name").value,
+                skills: document.getElementById("skills").value,
+                experience: document.getElementById("experience").value,
+                education: document.getElementById("education").value
+            };
+
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            const blob = await response.blob();
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "resume.pdf";
+
+            document.body.appendChild(a);
+            a.click();
+
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body>
+</html>
